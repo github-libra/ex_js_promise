@@ -4,8 +4,8 @@
     get('title.json')
         .then(addTitle)
         .then(function() {
-            get('chapters.json').then(function(chaptersList) {
-                chaptersList.map(get)
+            return get('chapters.json').then(function(chaptersList) {
+                return chaptersList.map(get)
                     .reduce(function(seq, promise) {
                         return seq.then(function() {
                             return promise;
@@ -13,6 +13,17 @@
                     }, Promise.resolve())
             })
         })
+        .catch(onError)
+        .then(removeLoading)
+
+
+    function removeLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    function onError(err) {
+        console.log(err);
+    }
 
     function addTitle(title) {
         var h1 = document.createElement('h1');
