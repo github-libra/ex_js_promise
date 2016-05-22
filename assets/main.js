@@ -2,12 +2,26 @@
 
 
     get('title.json')
-        .then(addTitle);
-    get('chapters.json').then(function(chaptersList) {
-        Promise.all(chaptersList.map(get)).then(function(chapters) {
-            chapters.map(addChapter);
-        });
-    })
+        .then(addTitle)
+        .then(function() {
+            return get('chapters.json').then(function(chaptersList) {
+                return Promise.all(chaptersList.map(get)).then(function(chapters) {
+                    chapters.map(addChapter);
+                });
+            }) 
+        })
+        .catch(onError)
+        .then(removeLoading)
+
+
+    function removeLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+    function onError(err) {
+        console.log(err);
+    }
+
+
 
     function addTitle(title) {
         var h1 = document.createElement('h1');
