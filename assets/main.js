@@ -5,11 +5,12 @@
         .then(addTitle)
         .then(function() {
             get('chapters.json').then(function(chaptersList) {
-                chaptersList.reduce(function(promise, chapter) {
-                    return promise.then(function() {
-                        return get(chapter).then(addChapter)
-                    })
-                }, Promise.resolve())
+                chaptersList.map(get)
+                    .reduce(function(seq, promise) {
+                        return seq.then(function() {
+                            return promise;
+                        }).then(addChapter);
+                    }, Promise.resolve())
             })
         })
 
