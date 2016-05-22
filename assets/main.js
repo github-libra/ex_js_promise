@@ -2,12 +2,16 @@
 
 
     get('title.json')
-        .then(addTitle);
-    get('chapters.json').then(function(chaptersList) {
-        Promise.all(chaptersList.map(get)).then(function(chapters) {
-            chapters.map(addChapter);
-        });
-    })
+        .then(addTitle)
+        .then(function() {
+            get('chapters.json').then(function(chaptersList) {
+                chaptersList.reduce(function(promise, chapter) {
+                    return promise.then(function() {
+                        return get(chapter).then(addChapter)
+                    })
+                }, Promise.resolve())
+            })
+        })
 
     function addTitle(title) {
         var h1 = document.createElement('h1');
@@ -35,7 +39,7 @@
                 // so check the status
                 if (req.status == 200) {
                     // Resolve the promise with the response text
-                    if(/\.json/.test(url)) {
+                    if (/\.json/.test(url)) {
                         resolve(JSON.parse(req.response));
                     }
                 } else {
