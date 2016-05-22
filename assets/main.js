@@ -28,13 +28,13 @@
     function addTitle(title) {
         var h1 = document.createElement('h1');
         h1.innerHTML = title.content;
-        document.body.appendChild(h1);
+        document.getElementById('content').appendChild(h1);
     }
 
     function addChapter(chapter) {
         var p = document.createElement('p');
         p.innerHTML = chapter.content;
-        document.body.appendChild(p);
+        document.getElementById('content').appendChild(p);
     }
 
 
